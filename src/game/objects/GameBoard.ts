@@ -3,6 +3,8 @@ import { GameTile } from "./GameTile"
 import { GameTileState } from "../enums/GameTileState";
 import { GameTileMark } from "../enums/GameTileMark";
 import { GameWinner } from "../enums/GameWinner";
+import { particleHandler } from "../../app";
+import { ParticleEffect } from "../enums/ParticleEffect";
 
 /**
  * Object for handling the game board.
@@ -34,6 +36,26 @@ export class GameBoard {
      * Tracks the current game winner.
      */
     private _gameWinner: GameWinner = GameWinner.None;
+
+    /**
+     * Stores the last winning combination for effects.
+     */
+    private _lastWinningCombination: number[] = [3];
+
+    /**
+     * A timer value used to delay each explosion effect when a game is won.
+     */
+    private _explosionEffectTimer: number = 0;
+
+    /**
+     * The explosion effect duration used to offset each trigger.
+     */
+    private _explosionEffectDuration: number = 10;
+
+    /**
+     * The next available index of the last winning combination to play an effect at.
+     */
+    private _explosionEffectIndex: number = 0;
 
     /**
      * All possible winning combinations based on tile positions.
@@ -93,6 +115,19 @@ export class GameBoard {
      */
     public Play(): void {
 
+        // Handle playing particle effects when a win has recently occurred.
+        if (this._gameOver && this._explosionEffectIndex <= 2) {
+            if (this._explosionEffectTimer > 0) {
+                this._explosionEffectTimer -= Engine.DeltaTime;
+            } else {
+                const position = this._gameTiles[this._lastWinningCombination[this._explosionEffectIndex]].Transform.Position;
+                particleHandler.Play(ParticleEffect.Explosion, position);
+                particleHandler.Play(ParticleEffect.Smoke, position);
+                this._explosionEffectTimer = this._explosionEffectDuration;
+                this._explosionEffectIndex++;
+            }
+        }
+
         // Loop through each game tile and determine if a hover/press has occurred.
         // Continue to set new states for tiles as changes are made.
         let checkGameOutcome = false;
@@ -110,6 +145,9 @@ export class GameBoard {
                         this._playerTurn = (this._playerTurn === 0) ? 1 : 0;
                         this.RequestUpdate = true;
                         checkGameOutcome = true;
+
+                        // Play a particle effect here.
+                        particleHandler.Play(ParticleEffect.Smoke, tile.Transform.Position);
 
                     } else {
                         tile.Set(GameTileState.Hovered, mark);
@@ -142,6 +180,8 @@ export class GameBoard {
         this._gameOver = false;
         this._gameWinner = GameWinner.None;
         this.RequestUpdate = true;
+        this._explosionEffectIndex = 0;
+        this._explosionEffectTimer = 0;
     }
     //#endregion
 
@@ -176,6 +216,12 @@ export class GameBoard {
                 c.Set(GameTileState.Winning, c.Marking);
                 this._gameWinner = (a.Marking === GameTileMark.O) ?
                     GameWinner.Player2 : GameWinner.Player1;
+
+                // Store the last winning combination for animations.
+                this._lastWinningCombination[0] = winCondition[0];
+                this._lastWinningCombination[1] = winCondition[1];
+                this._lastWinningCombination[2] = winCondition[2];
+                this._explosionEffectIndex = 0;
                 break;
             }
         }
@@ -197,6 +243,7 @@ export class GameBoard {
             // A tie has occurred.
             if (allTilesMarked) {
                 this._gameWinner = GameWinner.Tie;
+                this._explosionEffectIndex = 3;
                 roundWon = true;
             }
         }

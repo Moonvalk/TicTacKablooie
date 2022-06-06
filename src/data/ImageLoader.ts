@@ -34,6 +34,7 @@ export class ImageLibrary {
     static PLAYER_SIGN_X = './dist/data/images/PlayerSign_X.png';
     static PLAYER_SIGN_O = './dist/data/images/PlayerSign_O.png';
     static SMOKE_PARTICLE = './dist/data/images/SmokeParticle.png';
+    static EXPLOSION = './dist/data/images/Explosion.png';
 }
 
 /**
@@ -71,5 +72,6 @@ ImageLoader.Add([
     ImageLibrary.TAGLINE_TEXT,
     ImageLibrary.PLAYER_SIGN_X,
     ImageLibrary.PLAYER_SIGN_O,
-    ImageLibrary.SMOKE_PARTICLE
+    ImageLibrary.SMOKE_PARTICLE,
+    ImageLibrary.EXPLOSION
 ]);

@@ -33,12 +33,12 @@ export class MVEngine {
     private _isEngineRunning: boolean = false;
 
     /**
-     * 
+     * Stores the current delta time between last and current frame.
      */
     private _deltaTime: number;
 
     /**
-     * 
+     * Holds the lasts timestamp for comparison each frame.
      */
     private _lastTimestamp: number;
 

@@ -5,7 +5,8 @@ import { ParticleEffect } from "../enums/ParticleEffect";
 import { Particle } from "../models/Particle";
 
 /**
- * 
+ * Object representing a smoke particle effect that can be played on screen
+ * with the help of the ParticleHandler.
  */
 export class SmokeEffect implements Particle {
 
@@ -16,27 +17,28 @@ export class SmokeEffect implements Particle {
     public ParticleType: ParticleEffect = ParticleEffect.Smoke;
 
     /**
-     * 
+     * The number of particles to create for this effect.
      */
     private _particleCount: number = 10;
 
     /**
-     * 
+     * Stores reference to all particle sprites used to render the smoke effect.
      */
     private _particles: MVSprite[] = [];
 
     /**
-     * 
+     * Stores all speed/directions in which particles will move over their lifespan.
      */
     private _particleDirections: Vector2[] = [];
 
     /**
-     * 
+     * Stores whether or not this effect has paused due to completion.
      */
     private _paused: boolean = true;
+    //#endregion
 
     /**
-     * 
+     * Builds new sprites for the smoke particle effect.
      */
     public constructor() {
         for (let index = 0; index < this._particleCount; index++) {
@@ -45,13 +47,17 @@ export class SmokeEffect implements Particle {
         }
     }
 
+    //#region Public Methods
     /**
-     * 
-     * @param position_ 
+     * Plays this particle effect at the requested position.
+     * @param position_ - The position to play this particle effect at in screen space.
+     * @returns void
      */
     public Play(position_: Vector2): void {
 
+        // Enable rendering by flagging this as no longer paused.
         this._paused = false;
+
         for (let index = 0; index < this._particles.length; index++) {
             
             // Update starting position.
@@ -70,26 +76,30 @@ export class SmokeEffect implements Particle {
     }
 
     /**
-     * 
+     * Draws this particle effect to the screen while updating animations.
+     * @returns void
      */
-    public Draw(): boolean {
+    public Draw(): void {
         if (this._paused) {
-            return true;
+            return;
         }
 
         for (let index = 0; index < this._particles.length; index++) {
             const scale = this._particles[index].Transform.Scale.x;
             if (scale > 0.01) {
+
+                // Continue to update scale and translate until no longer visible.
                 const newScale = scale * 0.95;
                 this._particles[index].Transform.Translate(this._particleDirections[index]);
                 this._particles[index].Transform.SetScale(newScale, newScale);
-                this._particles[index].Transform.SetAlpha(newScale);
                 this._particles[index].Draw();
                 continue;
             }
-            this._paused = true;
-        }
 
-        return this._paused;
+            // No longer visible so now we can pause.
+            this._paused = true;
+            return;
+        }
     }
+    //#endregion
 }

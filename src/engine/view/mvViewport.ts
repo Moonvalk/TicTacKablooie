@@ -1,5 +1,5 @@
 import { Transform } from '../components/Transform'
-import { Vector2, Vector3 } from '../types/Vector';
+import { Vector2 } from '../types/Vector';
 import { Display } from '../setup/mvDisplay';
 import { MVRenderable } from '../models/mvRenderable';
 import { MVRenderableType } from '../enums/mvRenderableType';

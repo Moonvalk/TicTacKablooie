@@ -58,10 +58,5 @@ export class UniversalScene implements Scene {
         this._background.Draw();
         this._gameLogo.Draw();
         this._moonvalkLogo.Draw();
-
-        if (Engine.IsUserClicking) {
-            console.log("Try to play smoke particles...");
-            particleHandler.Play(ParticleEffect.Smoke, Engine.ViewportMousePosition);
-        }
     }
 }

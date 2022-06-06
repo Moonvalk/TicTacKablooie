@@ -1,5 +1,4 @@
 import { Engine } from "./mvEngine";
-
 /**
  * Abstract representing an object that will be added to the game loop update queue.
  */

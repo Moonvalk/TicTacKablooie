@@ -3,7 +3,6 @@ import { MVSprite } from "./mvSprite";
 import { MVText } from "./mvText";
 import { MVTextAlignment } from "../enums/mvTextAlignment";
 import { Transform } from "./Transform";
-import { ImageLibrary, ImageLoader } from "../../data/ImageLoader";
 
 /**
  * Class for creating screen button components.
@@ -16,9 +15,14 @@ export class MVButton {
      */
     private _sprite: MVSprite;
 
-
+    /**
+     * The image to be displayed while this button is idle.
+     */
     private _idleImage: HTMLImageElement;
 
+    /**
+     * The image to be displayed while this button is hovered.
+     */
     private _hoverImage: HTMLImageElement;
 
     /**
