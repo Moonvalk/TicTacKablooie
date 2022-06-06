@@ -4,6 +4,8 @@ import { GameTileState } from "../enums/GameTileState";
 import { GameTileMark } from "../enums/GameTileMark";
 import { Transform } from "../../engine/components/Transform";
 import { ImageLibrary, ImageLoader } from "../../data/ImageLoader";
+import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
+import { MVAudioGroup } from "../../engine/components/mvAudioGroup";
 
 /**
  * Container representing a singular game tile on the game board.
@@ -25,6 +27,11 @@ export class GameTile {
      * Holds reference to the active marking on this tile.
      */
     private _markedAs: GameTileMark = GameTileMark.None;
+
+    /**
+     * 
+     */
+    private _hoverAudio: MVAudioGroup;
     //#endregion
 
     /**
@@ -35,6 +42,12 @@ export class GameTile {
     public constructor(position_: Vector2) {
         this._sprite = new MVSprite(ImageLoader.Get(ImageLibrary.TILE_EMPTY));
         this.Transform.SetPosition(position_.x, position_.y);
+
+        this._hoverAudio = new MVAudioGroup([
+            AudioLoader.Get(AudioLibrary.HOVER1),
+            AudioLoader.Get(AudioLibrary.HOVER2),
+            AudioLoader.Get(AudioLibrary.HOVER3)
+        ]);
     }
 
     //#region Public Getters
@@ -101,6 +114,7 @@ export class GameTile {
                 break;
 
             case GameTileState.Hovered:
+                this._hoverAudio.Play();
                 if (this._markedAs === GameTileMark.O) {
                     this._sprite.SetImage(ImageLoader.Get(ImageLibrary.TILE_HOVER_O));
                 } else {

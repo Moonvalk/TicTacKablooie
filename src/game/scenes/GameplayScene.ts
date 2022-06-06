@@ -11,6 +11,8 @@ import { Engine } from "../../engine/mvEngine";
 import { GameState } from "../enums/GameState";
 import { Strings } from "../../data/Strings";
 import { MVSprite } from "../../engine/components/mvSprite";
+import { MVAudioGroup } from "../../engine/components/mvAudioGroup";
+import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
 
 /**
  * Scene for displaying and handling gameplay.
@@ -97,6 +99,21 @@ export class GameplayScene implements Scene{
      * A button available during gameplay to force a restart.
      */
     private _restartButton: MVButton;
+
+    /**
+     * Used to play audio for the rematch button.
+     */
+    private _rematchButtonSound: MVAudioGroup;
+
+    /**
+     * Used to play audio for the menu button.
+     */
+    private _menuButtonSound: MVAudioGroup;
+
+    /**
+     * Used to play audio for the restart button.
+     */
+    private _restartButtonSound: MVAudioGroup;
     //#endregion
 
     /**
@@ -146,6 +163,11 @@ export class GameplayScene implements Scene{
             ImageLoader.Get(ImageLibrary.RESTART_BUTTON_HOVER),
             { x: 200 , y: 960 }
         );
+
+        // Load audio.
+        this._rematchButtonSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.PLAY)]);
+        this._menuButtonSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.MAIN_MENU)]);
+        this._restartButtonSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.RESTART)]);
     }
 
     //#region Public Methods
@@ -177,6 +199,7 @@ export class GameplayScene implements Scene{
                     this._player2Health.Reset();
                     this.RequestScene = GameState.MainMenu;
                     this._fullGameOver = false;
+                    this._restartButtonSound.Play();
                     return;
                 }
             }
@@ -206,6 +229,7 @@ export class GameplayScene implements Scene{
                     this._player1Health.Reset();
                     this._player2Health.Reset();
                     this._fullGameOver = false;
+                    this._rematchButtonSound.Play();
                 }
             } else if (this._menuButton.IsHovered(Engine.MousePosition)) {
                 if (Engine.IsUserClicking) {
@@ -214,6 +238,7 @@ export class GameplayScene implements Scene{
                     this._player2Health.Reset();
                     this.RequestScene = GameState.MainMenu;
                     this._fullGameOver = false;
+                    this._menuButtonSound.Play();
                 }
             }
 

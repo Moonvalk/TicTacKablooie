@@ -3,6 +3,8 @@ import { MVSprite } from "./mvSprite";
 import { MVText } from "./mvText";
 import { MVTextAlignment } from "../enums/mvTextAlignment";
 import { Transform } from "./Transform";
+import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
+import { MVAudioGroup } from "./mvAudioGroup";
 
 /**
  * Class for creating screen button components.
@@ -29,6 +31,16 @@ export class MVButton {
      * Optional text component to be displayed on this button.
      */
     private _text?: MVText;
+
+    /**
+     * Flag for checking if this button was previously hovered.
+     */
+    private _hoveredLastFrame: boolean = false;
+
+    /**
+     * Used to play audio when this button is hovered.
+     */
+    private _hoverSound: MVAudioGroup;
     //#endregion
 
     /**
@@ -70,6 +82,9 @@ export class MVButton {
             this._text.Transform.SetSize(150, this._text.FontSize);
             this._text.Transform.SetRotation(0);
         }
+
+        // Add hover audio.
+        this._hoverSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.MENU_HOVER)]);
     }
 
     //#region Public Getters
@@ -90,11 +105,17 @@ export class MVButton {
      */
     public IsHovered(mousePosition_: Vector2): boolean {
         const hovered = this.Contains(mousePosition_);
-        if (hovered) {
-            this._sprite.SetImage(this._hoverImage);
-        } else {
-            this._sprite.SetImage(this._idleImage);
+        if (hovered !== this._hoveredLastFrame) {
+            this._hoveredLastFrame = hovered;
+
+            if (hovered) {
+                this._hoverSound.Play();
+                this._sprite.SetImage(this._hoverImage);
+            } else {
+                this._sprite.SetImage(this._idleImage);
+            }
         }
+
         return hovered;
     }
 

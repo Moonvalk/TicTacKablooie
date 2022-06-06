@@ -40,6 +40,8 @@ export class SceneHandler extends MVBehavior {
         // Create new Scenes that will display dynamically as the game is played.
         this._scenes[GameState.MainMenu] = new MainMenuScene();
         this._scenes[GameState.Gameplay] = new GameplayScene();
+
+        
     }
 
     /**

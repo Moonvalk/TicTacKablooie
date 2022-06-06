@@ -6,6 +6,8 @@ import { ImageLoader, ImageLibrary } from "../../data/ImageLoader";
 import { Strings } from "../../data/Strings";
 import { MVSprite } from "../../engine/components/mvSprite";
 import { SmokeEffect } from "../objects/SmokeEffect";
+import { MVAudioGroup } from "../../engine/components/mvAudioGroup";
+import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
 
 /**
  * Scene for rendering and handling user input from the main menu.
@@ -38,8 +40,15 @@ export class MainMenuScene implements Scene {
      */
     private _tagline: MVSprite;
 
+    /**
+     * Audio to be played when the play button is pressed.
+     */
+    private _playButtonSound: MVAudioGroup;
 
-    private _particleEffect?: SmokeEffect;
+    /**
+     * Audio to be played when the exit/credits buttons are pressed.
+     */
+    private _exitButtonSound: MVAudioGroup;
     //#endregion
 
     /**
@@ -67,6 +76,10 @@ export class MainMenuScene implements Scene {
 
         this._tagline = new MVSprite(ImageLoader.Get(ImageLibrary.TAGLINE_TEXT));
         this._tagline.Transform.SetPosition(960, 880);
+
+        // Store audio resources.
+        this._playButtonSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.PLAY)]);
+        this._exitButtonSound = new MVAudioGroup([AudioLoader.Get(AudioLibrary.MENU1)]);
     }
 
     /**
@@ -78,14 +91,17 @@ export class MainMenuScene implements Scene {
         if (this._playButton.IsHovered(Engine.MousePosition)) {
             if (Engine.IsUserClicking) {
                 this.RequestScene = GameState.Gameplay;
+                this._playButtonSound.Play();
             }
         } else if (this._creditsButton.IsHovered(Engine.MousePosition)) {
             if (Engine.IsUserClicking) {
                 window.open(Strings.CREDITS_URL, "_blank");
+                this._exitButtonSound.Play();
             }
         } else if (this._exitButton.IsHovered(Engine.MousePosition)) {
             if (Engine.IsUserClicking) {
                 window.open(Strings.EXIT_URL, "_self");
+                this._exitButtonSound.Play();
             }
         }
 
@@ -94,9 +110,5 @@ export class MainMenuScene implements Scene {
         this._creditsButton.Draw();
         this._exitButton.Draw();
         this._tagline.Draw();
-
-        if (this._particleEffect) {
-            this._particleEffect.Draw();
-        }
     }
 }

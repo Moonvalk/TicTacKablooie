@@ -5,6 +5,8 @@ import { GameTileMark } from "../enums/GameTileMark";
 import { GameWinner } from "../enums/GameWinner";
 import { particleHandler } from "../../app";
 import { ParticleEffect } from "../enums/ParticleEffect";
+import { MVAudioGroup } from "../../engine/components/mvAudioGroup";
+import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
 
 /**
  * Object for handling the game board.
@@ -58,6 +60,16 @@ export class GameBoard {
     private _explosionEffectIndex: number = 0;
 
     /**
+     * Stores the explosion sounds for playing.
+     */
+    private _explosionSounds: MVAudioGroup;
+
+    /**
+     * Stores the audio to be played when marking tiles.
+     */
+    private _markingSounds: MVAudioGroup;
+
+    /**
      * All possible winning combinations based on tile positions.
      */
     private _winningConditions = [
@@ -88,6 +100,25 @@ export class GameBoard {
             }
         }
         this.Reset();
+
+        // Store sounds.
+        this._explosionSounds = new MVAudioGroup([
+            AudioLoader.Get(AudioLibrary.EXPLOSION1),
+            AudioLoader.Get(AudioLibrary.EXPLOSION2),
+            AudioLoader.Get(AudioLibrary.EXPLOSION3),
+            AudioLoader.Get(AudioLibrary.EXPLOSION4),
+            AudioLoader.Get(AudioLibrary.EXPLOSION5),
+            AudioLoader.Get(AudioLibrary.EXPLOSION6)
+        ]);
+        this._explosionSounds.Randomize = true;
+
+        this._markingSounds = new MVAudioGroup([
+            AudioLoader.Get(AudioLibrary.MARK1),
+            AudioLoader.Get(AudioLibrary.MARK2),
+            AudioLoader.Get(AudioLibrary.MARK3),
+            AudioLoader.Get(AudioLibrary.MARK4),
+            AudioLoader.Get(AudioLibrary.MARK5)
+        ])
     }
 
     //#region Public Getters
@@ -123,6 +154,7 @@ export class GameBoard {
                 const position = this._gameTiles[this._lastWinningCombination[this._explosionEffectIndex]].Transform.Position;
                 particleHandler.Play(ParticleEffect.Explosion, position);
                 particleHandler.Play(ParticleEffect.Smoke, position);
+                this._explosionSounds.Play();
                 this._explosionEffectTimer = this._explosionEffectDuration;
                 this._explosionEffectIndex++;
             }
@@ -148,6 +180,7 @@ export class GameBoard {
 
                         // Play a particle effect here.
                         particleHandler.Play(ParticleEffect.Smoke, tile.Transform.Position);
+                        this._markingSounds.Play();
 
                     } else {
                         tile.Set(GameTileState.Hovered, mark);

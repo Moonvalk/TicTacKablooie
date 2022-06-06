@@ -1,4 +1,6 @@
+import { AudioLoader } from "../../data/AudioLoader";
 import { Engine } from "../mvEngine";
+import { LoadableImage } from "../types/LoadableImage";
 
 /**
  * Responsible for loading all images required by the game.
@@ -66,7 +68,7 @@ export class MVImageLoader {
         
         // When all images have resolved ping the engine to start.
         Promise.all(promiseToLoadImages).then(() => {
-            Engine.Start();
+            AudioLoader.LoadAll();
         });
     }
 

@@ -35,6 +35,8 @@ export class ImageLibrary {
     static PLAYER_SIGN_O = './dist/data/images/PlayerSign_O.png';
     static SMOKE_PARTICLE = './dist/data/images/SmokeParticle.png';
     static EXPLOSION = './dist/data/images/Explosion.png';
+    static AUDIO_BUTTON = './dist/data/images/Buttons/AudioButton_Idle.png';
+    static AUDIO_BUTTON_HOVER = './dist/data/images/Buttons/AudioButton_Hover.png';
 }
 
 /**
@@ -73,5 +75,7 @@ ImageLoader.Add([
     ImageLibrary.PLAYER_SIGN_X,
     ImageLibrary.PLAYER_SIGN_O,
     ImageLibrary.SMOKE_PARTICLE,
-    ImageLibrary.EXPLOSION
+    ImageLibrary.EXPLOSION,
+    ImageLibrary.AUDIO_BUTTON,
+    ImageLibrary.AUDIO_BUTTON_HOVER
 ]);
