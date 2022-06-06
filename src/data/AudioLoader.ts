@@ -18,8 +18,7 @@ import { MVAudioLoader } from "../engine/components/mvAudioLoader";
     static MARK1 = './dist/data/audio/mark1.wav';
     static MARK2 = './dist/data/audio/mark2.wav';
     static MARK3 = './dist/data/audio/mark3.wav';
-    static MARK4 = './dist/data/audio/mark3.wav';
-    static MARK5 = './dist/data/audio/mark3.wav';
+    static MARK4 = './dist/data/audio/mark4.wav';
     static MAIN_MENU = './dist/data/audio/mainmenu.wav';
     static MENU1 = './dist/data/audio/menu1.wav';
     static MENU2 = './dist/data/audio/menu2.wav';
@@ -49,7 +48,6 @@ AudioLoader.Add([
     AudioLibrary.MARK2,
     AudioLibrary.MARK3,
     AudioLibrary.MARK4,
-    AudioLibrary.MARK5,
     AudioLibrary.MAIN_MENU,
     AudioLibrary.MENU1,
     AudioLibrary.MENU2,

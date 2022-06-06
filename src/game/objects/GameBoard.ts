@@ -116,8 +116,7 @@ export class GameBoard {
             AudioLoader.Get(AudioLibrary.MARK1),
             AudioLoader.Get(AudioLibrary.MARK2),
             AudioLoader.Get(AudioLibrary.MARK3),
-            AudioLoader.Get(AudioLibrary.MARK4),
-            AudioLoader.Get(AudioLibrary.MARK5)
+            AudioLoader.Get(AudioLibrary.MARK4)
         ])
     }
 
