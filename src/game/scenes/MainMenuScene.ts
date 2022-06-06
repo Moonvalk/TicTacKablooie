@@ -5,7 +5,6 @@ import { GameState } from "../enums/GameState";
 import { ImageLoader, ImageLibrary } from "../../data/ImageLoader";
 import { Strings } from "../../data/Strings";
 import { MVSprite } from "../../engine/components/mvSprite";
-import { SmokeEffect } from "../objects/SmokeEffect";
 import { MVAudioGroup } from "../../engine/components/mvAudioGroup";
 import { AudioLibrary, AudioLoader } from "../../data/AudioLoader";
 

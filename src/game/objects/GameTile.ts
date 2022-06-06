@@ -29,7 +29,7 @@ export class GameTile {
     private _markedAs: GameTileMark = GameTileMark.None;
 
     /**
-     * 
+     * Used to play hover audio whenever this instance is hovered over.
      */
     private _hoverAudio: MVAudioGroup;
     //#endregion
