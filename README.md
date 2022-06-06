@@ -6,4 +6,6 @@ This project was created over the course of a day and a half completely from scr
 A hosted copy of the latest working build can be found on my website:
 https://moonvalk.com/projects/tictack/
 
+-----
+
 Please make sure to install all dependencies for the project as needed. Webpack is used to compile, package, and serve the build on a local test server.
