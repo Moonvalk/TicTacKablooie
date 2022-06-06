@@ -10,6 +10,7 @@ import { MVButton } from "../../engine/components/mvButton";
 import { Engine } from "../../engine/mvEngine";
 import { GameState } from "../enums/GameState";
 import { Strings } from "../../data/Strings";
+import { MVSprite } from "../../engine/components/mvSprite";
 
 /**
  * Scene for displaying and handling gameplay.
@@ -43,6 +44,16 @@ export class GameplayScene implements Scene{
     private _player2Text: MVText = new MVText("PLAYER 2");
 
     /**
+     * Stores and renders the player sign image for player 1.
+     */
+    private _player1Sign: MVSprite;
+
+    /**
+     * Stores and renders the player sign image for player 2.
+     */
+    private _player2Sign: MVSprite;
+
+    /**
      * Health display component for player 1.
      */
     private _player1Health: PlayerHealth;
@@ -70,7 +81,7 @@ export class GameplayScene implements Scene{
      /**
       * The total number of frames that must pass for game results to be viewable.
       */
-     private _gameResultWaitDuration: number = 500;
+     private _gameResultWaitDuration: number = 120;
 
      /**
       * The rematch button displayed at the end of gameplay.
@@ -81,6 +92,11 @@ export class GameplayScene implements Scene{
      * The menu button displayed at the end of gameplay.
      */
     private _menuButton: MVButton;
+
+    /**
+     * A button available during gameplay to force a restart.
+     */
+    private _restartButton: MVButton;
     //#endregion
 
     /**
@@ -98,24 +114,37 @@ export class GameplayScene implements Scene{
         this._player1Health = new PlayerHealth(
             ImageLoader.Get(ImageLibrary.HEART),
             ImageLoader.Get(ImageLibrary.HEART_EMPTY),
-            { x: 240, y: 350 }
+            { x: 220, y: 650 }
         );
         this._player2Health = new PlayerHealth(
             ImageLoader.Get(ImageLibrary.HEART),
             ImageLoader.Get(ImageLibrary.HEART_EMPTY),
-            { x: 1560, y: 350 }
+            { x: 1580, y: 650 }
         );
+
+        // Set up sign images for each player.
+        this._player1Sign = new MVSprite(ImageLoader.Get(ImageLibrary.PLAYER_SIGN_X));
+        this._player1Sign.Transform.SetPosition(280, 500);
+        this._player2Sign = new MVSprite(ImageLoader.Get(ImageLibrary.PLAYER_SIGN_O));
+        this._player2Sign.Transform.SetPosition(1640, 500);
 
         // Build new buttons for end of gameplay.
         this._rematchButton = new MVButton(
-            ImageLoader.Get(ImageLibrary.BUTTON),
-            { x: 820, y: 600 },
-            'REMATCH'
+            ImageLoader.Get(ImageLibrary.REMATCH_BUTTON),
+            ImageLoader.Get(ImageLibrary.REMATCH_BUTTON_HOVER),
+            { x: 780, y: 650 },
         );
         this._menuButton = new MVButton(
-            ImageLoader.Get(ImageLibrary.BUTTON),
-            { x: 1100, y: 600 },
-            'MENU'
+            ImageLoader.Get(ImageLibrary.MENU_BUTTON),
+            ImageLoader.Get(ImageLibrary.MENU_BUTTON_HOVER),
+            { x: 1140, y: 650 }
+        );
+
+        // Build the 'restart' button shown during gameplay if players chose to leave.
+        this._restartButton = new MVButton(
+            ImageLoader.Get(ImageLibrary.RESTART_BUTTON),
+            ImageLoader.Get(ImageLibrary.RESTART_BUTTON_HOVER),
+            { x: 200 , y: 960 }
         );
     }
 
@@ -131,16 +160,32 @@ export class GameplayScene implements Scene{
         this._playerTurnText.Draw();
         this._player1Text.Draw();
         this._player2Text.Draw();
-
+    
         // Render player health display.
         this._player1Health.Draw();
         this._player2Health.Draw();
+        this._player1Sign.Draw();
+        this._player2Sign.Draw();
 
         if (!this._fullGameOver) {
 
+            // Render and handle updates to the 'restart' button.
+            if (this._restartButton.IsHovered(Engine.MousePosition)) {
+                if (Engine.IsUserClicking) {
+                    this._gameBoard.Reset();
+                    this._player1Health.Reset();
+                    this._player2Health.Reset();
+                    this.RequestScene = GameState.MainMenu;
+                    this._fullGameOver = false;
+                    return;
+                }
+            }
+            this._restartButton.Draw();
+
+            // Check for game board winning scenarios.
             if (this._gameBoard.GameWinner !== GameWinner.None) {
                 if (this._gameResultTimer > 0) {
-                    this._gameResultTimer -= 1;
+                    this._gameResultTimer -= Engine.DeltaTime;
                 } else {
                     this._gameBoard.Reset();
                     if (this._player1Health.HP === 0 || this._player2Health.HP === 0) {
@@ -190,7 +235,6 @@ export class GameplayScene implements Scene{
         // Play game board and listen for update requests.
         this._gameBoard.Play();
 
-
         if (this._gameBoard.RequestUpdate) {
             this._gameBoard.RequestUpdate = false;
 
@@ -199,7 +243,7 @@ export class GameplayScene implements Scene{
 
                 // Display active game stats and text.
                 this._instructionText.Transform.SetPosition(900, 960);
-                this._instructionText.SetValue(Strings._GAME_ACTIVE_TEXT);
+                this._instructionText.SetValue(Strings.GAME_ACTIVE_TEXT);
                 if (this._gameBoard.PlayerTurn === 0) {
                     this._playerTurnText.SetValue("PLAYER 1");
                     this._playerTurnText.SetColor(254, 234, 0);
@@ -212,14 +256,14 @@ export class GameplayScene implements Scene{
 
                 // Handle tie scenario by updating text and delaying next game.
                 this._instructionText.Transform.SetPosition(960, 960);
-                this._instructionText.SetValue(Strings._GAME_TIED_TEXT);
+                this._instructionText.SetValue(Strings.GAME_TIED_TEXT);
                 this._playerTurnText.SetValue("");
                 this._gameResultTimer = this._gameResultWaitDuration;
             } else {
 
                 // Handle a winning game by updating display, health, and delaying the potential next game.
                 this._instructionText.Transform.SetPosition(900, 960);
-                this._instructionText.SetValue(Strings._GAME_WIN_TEXT);
+                this._instructionText.SetValue(Strings.GAME_WIN_TEXT);
 
                 if (this._gameBoard.GameWinner === GameWinner.Player1) {
                     this._player2Health.LoseHealth();
@@ -246,12 +290,12 @@ export class GameplayScene implements Scene{
         this._playerTurnText.SetMaxWidth(300);
         this._playerTurnText.SetColor(254, 234, 0);
 
-        this._player1Text.Transform.SetPosition(300, 300);
+        this._player1Text.Transform.SetPosition(280, 600);
         this._player1Text.SetFontProperties("Oswald-Regular", 32, MVTextAlignment.Center, MVFontStyle.Italic);
         this._player1Text.SetMaxWidth(300);
         this._player1Text.SetColor(254, 234, 0);
 
-        this._player2Text.Transform.SetPosition(1620, 300);
+        this._player2Text.Transform.SetPosition(1640, 600);
         this._player2Text.SetFontProperties("Oswald-Regular", 32, MVTextAlignment.Center, MVFontStyle.Italic);
         this._player2Text.SetMaxWidth(300);
         this._player2Text.SetColor(45, 242, 239);

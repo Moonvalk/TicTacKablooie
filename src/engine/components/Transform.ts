@@ -30,6 +30,11 @@ export class Transform {
     private _scale: Vector2 = { x: 1, y: 1 };
 
     /**
+     * The opacity of this Transform.
+     */
+    private _alpha: number = 1;
+
+    /**
      * Holds the current Z-axis rotation used when rendering.
      */
     private _rotation: number = 0;
@@ -97,6 +102,14 @@ export class Transform {
             this.ViewportSize.x,
             this.ViewportSize.y
         );
+    }
+
+    /**
+     * Gets the opacity/alpha applied to this Transform.
+     * @returns number - The current opacity.
+     */
+    get Alpha(): number {
+        return this._alpha;
     }
     //#endregion
 
@@ -179,6 +192,24 @@ export class Transform {
      */
     public SetRotation(rotationDegrees_: number): void {
         this._rotation = rotationDegrees_ * ExtMath.TO_RADIANS;
+    }
+
+    /**
+     * Translates this Transform component on screen.
+     * @param translation_ - The Vector to Translate in.
+     * @returns void
+     */
+    public Translate(translation_: Vector2): void {
+        this.SetPosition(this.Position.x + translation_.x, this.Position.y + translation_.y);
+    }
+
+    /**
+     * Sets the opacity of this Transform.
+     * @param opacity_ - The opacity/alpha to used when rendering.
+     * @returns void
+     */
+    public SetAlpha(opacity_: number): void {
+        this._alpha = opacity_;
     }
     //#endregion
 

@@ -127,6 +127,7 @@ export class MVViewport {
         this._context.translate(transform_.Position.x * this._resolution.x,
             transform_.Position.y * this._resolution.y);
         this._context.rotate(transform_.Rotation);
+        this._context.globalAlpha = transform_.Alpha;
 
         // Render now.
         this._context.drawImage(
@@ -136,6 +137,7 @@ export class MVViewport {
             (transform_.Size.x * this._resolution.x),
             (transform_.Size.y * this._resolution.y)
         );
+        this._context.globalAlpha = 1;
     }
 
     /**

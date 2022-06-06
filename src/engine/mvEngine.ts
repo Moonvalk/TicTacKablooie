@@ -1,6 +1,7 @@
 import { MVViewport } from "./view/mvViewport";
 import { MVBehavior } from "./mvBehavior";
 import { Vector2 } from "./types/Vector";
+import { Display } from "./setup/mvDisplay";
 
 // Create a new Renderer component.
 export const Renderer = new MVViewport('#gameCanvas');
@@ -30,6 +31,17 @@ export class MVEngine {
      * Flag that determines when the engine is actively running.
      */
     private _isEngineRunning: boolean = false;
+
+    /**
+     * 
+     */
+    private _deltaTime: number;
+
+    /**
+     * 
+     */
+    private _lastTimestamp: number;
+
     //#endregion
 
     /**
@@ -53,6 +65,8 @@ export class MVEngine {
         Renderer.Canvas.onclick = () => {
             this._isUserClicking = true;
         };
+        this._deltaTime = 0;
+        this._lastTimestamp = 0;
     }
 
     //#region Public Getters
@@ -62,6 +76,13 @@ export class MVEngine {
      */
     get MousePosition(): Vector2 {
         return this._mousePosition;
+    }
+
+    /**
+     * Gets the viewport mouse position.
+     */
+    get ViewportMousePosition(): Vector2 {
+        return { x: this._mousePosition.x / Renderer.Resolution.x, y: this._mousePosition.y / Renderer.Resolution.y };
     }
 
     /**
@@ -79,6 +100,14 @@ export class MVEngine {
     get IsRunning(): boolean {
         return this._isEngineRunning;
     }
+
+    /**
+     * Gets the current delta between the last and current frame.
+     * @returns number - The current delta time.
+     */
+    get DeltaTime(): number {
+        return this._deltaTime;
+    }
     //#endregion
     
     //#region Public Methods
@@ -88,14 +117,18 @@ export class MVEngine {
      */
     public Start(): void {
         this._isEngineRunning = true;
-        this.GameLoop();
+        requestAnimationFrame(this.GameLoop.bind(this));
     }
 
     /**
      * Initializes and continues the main game loop.
      * @returns void
      */
-    public GameLoop(): void {
+    public GameLoop(timestamp_: number): void {
+
+        // Get DeltaTime since last frame.
+        this._deltaTime = (timestamp_ - this._lastTimestamp) / Display.PERFECT_FRAME_TIME;
+        this._lastTimestamp = timestamp_;
 
         // Continue to update canvas size in the event that it changes.
         Renderer.UpdateCanvasSize();

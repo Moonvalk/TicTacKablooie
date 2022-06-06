@@ -1,4 +1,5 @@
 import { MVSprite } from "../../engine/components/mvSprite";
+import { Engine } from "../../engine/mvEngine";
 
 /**
  * Object representing the animated game logo.
@@ -59,6 +60,7 @@ export class GameLogo {
      * @returns void
      */
     private animate(): void {
-        this._animate = (this._animate > 100000) ? this._animate - 100000 : this._animate + 0.01;
+        this._animate = (this._animate > 100000) ?
+            this._animate - 100000 : this._animate + (Engine.DeltaTime * 0.03);
     }
 }

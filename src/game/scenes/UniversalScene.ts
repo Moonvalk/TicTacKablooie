@@ -1,5 +1,8 @@
+import { particleHandler } from "../../app";
 import { ImageLibrary, ImageLoader } from "../../data/ImageLoader";
 import { MVSprite } from "../../engine/components/mvSprite";
+import { Engine } from "../../engine/mvEngine";
+import { ParticleEffect } from "../enums/ParticleEffect";
 import { Scene } from "../models/Scene";
 import { GameLogo } from "../objects/GameLogo";
 
@@ -39,7 +42,7 @@ export class UniversalScene implements Scene {
         this._background = new MVSprite(ImageLoader.Get(ImageLibrary.BACKGROUND));
         this._background.Transform.SetPosition(960, 540);
         this._moonvalkLogo = new MVSprite(ImageLoader.Get(ImageLibrary.MOONVALK_LOGO));
-        this._moonvalkLogo.Transform.SetPosition(1720, 980);
+        this._moonvalkLogo.Transform.SetPosition(220, 120);
 
         this._gameLogo = new GameLogo(
             ImageLoader.Get(ImageLibrary.LOGO_ICON),
@@ -55,5 +58,10 @@ export class UniversalScene implements Scene {
         this._background.Draw();
         this._gameLogo.Draw();
         this._moonvalkLogo.Draw();
+
+        if (Engine.IsUserClicking) {
+            console.log("Try to play smoke particles...");
+            particleHandler.Play(ParticleEffect.Smoke, Engine.ViewportMousePosition);
+        }
     }
 }

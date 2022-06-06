@@ -2,6 +2,7 @@ import { CursorRenderer } from './game/objects/CursorRenderer';
 import { SceneHandler } from './game/SceneHandler';
 import { ImageLoader, ImageLibrary } from './data/ImageLoader';
 import { MVBehavior } from './engine/mvBehavior';
+import { ParticleHandler } from './game/objects/ParticleHandler';
 
 /**
  * On window load begin the game engine.
@@ -33,6 +34,7 @@ class MVEngineMain extends MVBehavior {
 
         // Create new top level game objects.
         sceneHandler = new SceneHandler();
+        particleHandler = new ParticleHandler();
         cursor = new CursorRenderer(ImageLoader.Get(ImageLibrary.CURSOR));
     }
 }
@@ -40,4 +42,5 @@ class MVEngineMain extends MVBehavior {
 // Create new Main object responsible for starting game once the engine is ready.
 const Main = new MVEngineMain();
 let sceneHandler: SceneHandler;
+export let particleHandler: ParticleHandler;
 let cursor: CursorRenderer;

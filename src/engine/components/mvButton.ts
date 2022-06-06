@@ -16,6 +16,11 @@ export class MVButton {
      */
     private _sprite: MVSprite;
 
+
+    private _idleImage: HTMLImageElement;
+
+    private _hoverImage: HTMLImageElement;
+
     /**
      * Optional text component to be displayed on this button.
      */
@@ -25,15 +30,23 @@ export class MVButton {
     /**
      * Builds a new Sprite and Transform, sets this button's displayed text,
      * and updates the position on screen.
-     * @param textValue_ - The text value to be displayed on this button.
-     * @param image_ - The image to be used for this button.
+     * @param idleImage_ - The image to be used for this button.
+     * @param hoverImage_ - The image to be used for this button when hovered.
      * @param position_ - The position of this button.
+     * @param textValue_ - The text value to be displayed on this button.
      */
-    public constructor(image_: HTMLImageElement, position_: Vector2, textValue_?: string) {
+    public constructor(
+        idleImage_: HTMLImageElement,
+        hoverImage_: HTMLImageElement,
+        position_: Vector2,
+        textValue_?: string
+    ) {
         
         // Create new sprite with this image.
-        this._sprite = new MVSprite(image_);
-
+        this._idleImage = idleImage_;
+        this._hoverImage = hoverImage_;
+        this._sprite = new MVSprite(this._idleImage);
+    
         // Update Transform position.
         this.Transform.SetPosition(position_.x, position_.y);
 
@@ -74,9 +87,9 @@ export class MVButton {
     public IsHovered(mousePosition_: Vector2): boolean {
         const hovered = this.Contains(mousePosition_);
         if (hovered) {
-            this._sprite.SetImage(ImageLoader.Get(ImageLibrary.BUTTON_HOVER));
+            this._sprite.SetImage(this._hoverImage);
         } else {
-            this._sprite.SetImage(ImageLoader.Get(ImageLibrary.BUTTON));
+            this._sprite.SetImage(this._idleImage);
         }
         return hovered;
     }
