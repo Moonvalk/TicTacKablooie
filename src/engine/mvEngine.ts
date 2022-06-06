@@ -75,7 +75,7 @@ export class MVEngine {
      * @returns Vector2 - The two-point Vector representing mouse position within the DOM canvas element.
      */
     get MousePosition(): Vector2 {
-        return this._mousePosition;
+        return { x: this._mousePosition.x * devicePixelRatio, y: this._mousePosition.y * devicePixelRatio };
     }
 
     /**

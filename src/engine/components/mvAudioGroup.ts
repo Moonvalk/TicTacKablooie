@@ -36,6 +36,10 @@ export class MVAudioGroup {
      * @returns void
      */
     public Play(): void {
+        if (!this._audioResources[this._nextAudioIndex]) {
+            return;
+        }
+
         if (this._audioResources[this._nextAudioIndex].currentTime > 0 ||
             this._audioResources[this._nextAudioIndex].paused) {
             this._audioResources[this._nextAudioIndex].pause();

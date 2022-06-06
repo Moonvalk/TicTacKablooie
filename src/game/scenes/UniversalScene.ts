@@ -37,7 +37,7 @@ export class UniversalScene implements Scene {
     /**
      * The game music to be played once started.
      */
-    private _gameMusic: HTMLAudioElement;
+    private _gameMusic?: HTMLAudioElement;
 
     /**
      * Button for turning game music on and off.
@@ -66,7 +66,9 @@ export class UniversalScene implements Scene {
 
         // Load game music.
         this._gameMusic = AudioLoader.Get(AudioLibrary.MUSIC);
-        this._gameMusic.loop = true;
+        if (this._gameMusic) {
+            this._gameMusic.loop = true;
+        }
 
         // Create new audio button for toggling music.
         this._audioButton = new MVButton(
@@ -92,15 +94,15 @@ export class UniversalScene implements Scene {
             if (Engine.IsUserClicking) {
                 this._audioToggle = !this._audioToggle;
                 if (!this._audioToggle) {
-                    this._gameMusic.pause();
+                    this._gameMusic?.pause();
                 }
             }
         }
         this._audioButton.Draw();
 
         if (Engine.IsUserClicking) {
-            if (this._audioToggle && this._gameMusic.paused) {
-                this._gameMusic.play();
+            if (this._audioToggle && this._gameMusic?.paused) {
+                this._gameMusic?.play();
             }
         }
     }

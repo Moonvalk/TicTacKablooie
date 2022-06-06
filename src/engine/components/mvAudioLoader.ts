@@ -51,7 +51,11 @@ export class MVAudioLoader {
      */
     public LoadAll(): void {
         
-        console.log("Started loading audio");
+        // Do not load audio for mobile devices. This is a temporary hack.
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            Engine.Start();
+            return;
+        }
 
         // Loop through all audio URLs and create a promise to load each one individually.
         // Resolve when a load is successful and add the new resource to the global _loadedAudio list.
